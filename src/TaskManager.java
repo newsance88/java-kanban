@@ -7,6 +7,37 @@ public class TaskManager {
     private HashMap<Integer,Epic> epics = new HashMap<>();
     private HashMap<Integer,Sub> subs = new HashMap<>();
     private HashMap<Integer, ArrayList<Integer>> epicToSub = new HashMap<>();
+    public void updateEpicStatus(int epicId) {
+        Epic epic = epics.get(epicId);
+        if (epic == null) return;
+
+        ArrayList<Integer> subTaskIds = epicToSub.get(epicId);
+        if (subTaskIds == null || subTaskIds.isEmpty()) {
+            epic.setStatus(Status.NEW);
+            return;
+        }
+
+        boolean allDone = true;
+        boolean anyInProgress = false;
+
+        for (Integer subTaskId : subTaskIds) {
+            Sub sub = subs.get(subTaskId);
+            if (sub.getStatus() != Status.DONE) {
+                allDone = false;
+            }
+            if (sub.getStatus() == Status.IN_PROGRESS) {
+                anyInProgress = true;
+            }
+        }
+
+        if (allDone) {
+            epic.setStatus(Status.DONE);
+        } else if (anyInProgress) {
+            epic.setStatus(Status.IN_PROGRESS);
+        } else {
+            epic.setStatus(Status.NEW);
+        }
+    }
 
     public void removeTasks() {
         tasks.clear();
@@ -45,6 +76,7 @@ public class TaskManager {
         epic.setId(id);
         epics.put(id,epic);
         epicToSub.put(id,new ArrayList<>());
+        updateEpicStatus(epic.getId());
         return epic;
     }
     public Sub addSub(Sub sub) {
@@ -55,8 +87,9 @@ public class TaskManager {
             ArrayList<Integer> newSubList = epicToSub.get(sub.getEpicId());
             newSubList.add(id);
             epicToSub.put(sub.getEpicId(),newSubList);
+            updateEpicStatus(sub.getEpicId());
         } else {
-            System.out.println("Такого Айди нету эпика");
+            System.out.println("Такого Айди эпика нету");
         }
         return sub;
     }

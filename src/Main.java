@@ -3,7 +3,7 @@ public class Main {
         System.out.println("Hello world!");
         TaskManager taskManager = new TaskManager();
         Task task = taskManager.addTask(new Task("Таск1",Status.IN_PROGRESS));
-        Epic epic = taskManager.addEpic(new Epic("Эпик1", Status.NEW));
+        Epic epic = taskManager.addEpic(new Epic("Эпик1", Status.IN_PROGRESS));
         taskManager.addSub(new Sub("Саб1", Status.NEW, epic.getId()));
         taskManager.addSub(new Sub("Саб2", Status.NEW, epic.getId()));
         taskManager.addSub(new Sub("Саб3", Status.NEW, epic.getId()));
