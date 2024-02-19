@@ -1,4 +1,9 @@
-public class Epic extends Task{
+package tasks;
+
+import java.util.ArrayList;
+
+public class Epic extends Task {
+    public ArrayList<Integer> subTaskId = new ArrayList<>();
     public Epic(String name, Status status) {
         super(name, status);
     }
