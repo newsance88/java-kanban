@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskManager {
-    public int id;
+    private int id;
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
     private HashMap<Integer, SubTask> subs = new HashMap<>();
@@ -14,9 +14,8 @@ public class TaskManager {
 
     public ArrayList<SubTask> getSubsFromEpic(int id) {
         Epic epic = epics.get(id);
-        ArrayList<Integer> idList = epic.getSubTaskId();
         ArrayList<SubTask> subList = new ArrayList<>();
-        for (int number : idList) {
+        for (int number : epic.getSubTaskId()) {
             subList.add(subs.get(number));
         }
         return subList;
@@ -24,9 +23,22 @@ public class TaskManager {
 
     public void deleteSub(int id) {
         SubTask subTask = subs.get(id);
+        if (subTask == null) {
+            return;
+        }
+
         Epic epic = epics.get(subTask.getEpicId());
-        updateEpicStatus(epic.getId());
+        if (epic == null) {
+            return;
+        }
+
+        ArrayList<Integer> subList = epic.getSubTaskId();
+        subList.remove(Integer.valueOf(id)); // Можешь, пожалуйста, объяснить, почему если тут написать просто id, без valueOf, то метод будет работать некорректно
+        epic.setSubTaskId(subList);
+
         subs.remove(id);
+
+        updateEpicStatus(epic.getId());
     }
 
     public SubTask getSub(int id) {
@@ -42,12 +54,11 @@ public class TaskManager {
     }
 
     public void deleteEpic(int id) {
-        ArrayList<Integer> subTaskKeysToDelete = new ArrayList<>();
-        for (SubTask subTask : subs.values()) {
-            if (subTask.getEpicId() == id) {
-                subTaskKeysToDelete.add(subTask.getId());
-            }
+        Epic epic = epics.get(id);
+        if (epic == null) {
+            return;
         }
+        ArrayList<Integer> subTaskKeysToDelete = epic.getSubTaskId();
         for (int number : subTaskKeysToDelete) {
             subs.remove(number);
         }
@@ -99,6 +110,7 @@ public class TaskManager {
 
     public void removeEpics() {
         epics.clear();
+        subs.clear();
     }
 
     public void removeSubs() {
@@ -170,27 +182,15 @@ public class TaskManager {
     }
 
     public ArrayList<Epic> getAllEpics() {
-        ArrayList<Epic> epicList = new ArrayList<>();
-        for (Epic epic : epics.values()) {
-            epicList.add(epic);
-        }
-        return epicList;
+        return new ArrayList<>(epics.values());
     }
 
     public ArrayList<SubTask> getAllSubs() {
-        ArrayList<SubTask> subList = new ArrayList<>();
-        for (SubTask subTask : subs.values()) {
-            subList.add(subTask);
-        }
-        return subList;
+        return new ArrayList<>(subs.values());
     }
 
     public ArrayList<Task> getAllTasks() {
-        ArrayList<Task> taskList = new ArrayList<>();
-        for (Task task : tasks.values()) {
-            taskList.add(task);
-        }
-        return taskList;
+        return new ArrayList<>(tasks.values());
     }
 
 }
