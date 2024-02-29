@@ -4,21 +4,21 @@ import tasks.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id;
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
     private HashMap<Integer, SubTask> subs = new HashMap<>();
-    private ArrayList<Task> historyList;
 
-    public InMemoryTaskManager() {
-        historyList = new ArrayList<>();
+    public InMemoryTaskManager(HistoryManager historyManager) {
     }
+    private HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public ArrayList<Task> getHistory() {
-        return historyList;
+        return historyManager.getHistory();
     }
 
     @Override
@@ -54,10 +54,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public SubTask getSub(int id) {
-        if (historyList.size() >= 10) {
-            historyList.remove(0);
+        if (getHistory().size() >= 10) {
+            getHistory().remove(0);
         }
-        historyList.add(subs.get(id));
+        historyManager.add(subs.get(id));
         return subs.get(id);
     }
 
@@ -68,10 +68,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int id) {
-        if (historyList.size() >= 10) {
-            historyList.remove(0);
+        if (getHistory().size() >= 10) {
+            getHistory().remove(0);
         }
-        historyList.add(tasks.get(id));
+        historyManager.add(tasks.get(id));
         return tasks.get(id);
     }
 
@@ -90,10 +90,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpic(int id) {
-        if (historyList.size() >= 10) {
-            historyList.remove(0);
+        if (getHistory().size() >= 10) {
+            getHistory().remove(0);
         }
-        historyList.add(epics.get(id));
+        historyManager.add(epics.get(id));
         return epics.get(id);
     }
 
@@ -233,5 +233,6 @@ public class InMemoryTaskManager implements TaskManager {
     public ArrayList<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
     }
+
 
 }

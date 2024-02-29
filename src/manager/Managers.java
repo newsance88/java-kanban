@@ -1,13 +1,13 @@
 package manager;
 
-public class Managers { //Я вот не совсем понимаю зачем нам столько интерфейсов, как будто пока мы только усложняем программу
-    public Managers() {
+public class Managers {
+    private Managers() {
 
     }
-    public TaskManager getDefault() {
-        return new InMemoryTaskManager();
+    public static TaskManager getDefault() {
+        return new InMemoryTaskManager(getDefaultHistory());
     }
-    public HistoryManager getDefaultHistory() {
+    public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 
