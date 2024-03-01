@@ -233,6 +233,12 @@ public class InMemoryTaskManager implements TaskManager {
     public ArrayList<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
     }
+    @Override
+    public void removeAllTasks() {
+        removeEpics();
+        removeSubs();
+        removeTasks();
+    }
 
 
 }

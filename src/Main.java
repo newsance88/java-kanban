@@ -15,6 +15,7 @@ public class Main {
         Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1");
         taskManager.addTask(task);
         taskManager.getTask(task.getId());
-        System.out.println(historyManager.getHistory());
+        //historyManager.add(task);
+        System.out.println(taskManager.getHistory());
     }
 }
