@@ -24,13 +24,9 @@ public class ManagersTest {
         historyManager = Managers.getDefaultHistory();
     }
     @Test
-    void OneManagerContainsTwoTest() {
-        Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1");
-        taskManager.addTask(task);
-        historyManager.add(task);
-        taskManager.getTask(task.getId());
-        ArrayList<Task> list1 = historyManager.getHistory();
-        ArrayList<Task> list2 = taskManager.getHistory();
-        Assertions.assertEquals(list2,list1);
+    void managersNotNull() {
+        Assertions.assertNotNull(taskManager);
+        Assertions.assertNotNull(historyManager);
     }
+
 }

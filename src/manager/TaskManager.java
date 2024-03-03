@@ -48,5 +48,4 @@ public interface TaskManager {
      ArrayList<SubTask> getAllSubs();
 
      ArrayList<Task> getAllTasks();
-     void removeAllTasks();
 }

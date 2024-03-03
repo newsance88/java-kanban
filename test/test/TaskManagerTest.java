@@ -15,11 +15,9 @@ import java.util.ArrayList;
 
 public class TaskManagerTest {
     private TaskManager taskManager;
-    private HistoryManager historyManager;
     @BeforeEach
     void beforeEach() {
         taskManager = Managers.getDefault();
-        historyManager = Managers.getDefaultHistory();
     }
     @Test
     void addNewTasks() {
@@ -85,7 +83,9 @@ public class TaskManagerTest {
         Assertions.assertEquals(taskManager.getSub(updatedSub.getId()),updatedSub);
         Assertions.assertNotEquals(subTask,updatedSub);
 
-        taskManager.removeAllTasks();
+        taskManager.removeTasks();
+        taskManager.removeEpics();
+        taskManager.removeSubs();
         Assertions.assertEquals(taskManager.getAllTasks(),new ArrayList<Task>());
         Assertions.assertEquals(taskManager.getAllEpics(),new ArrayList<Task>());
         Assertions.assertEquals(taskManager.getAllSubs(),new ArrayList<Task>());
