@@ -1,51 +1,51 @@
 package manager;
 
 import tasks.Epic;
-import tasks.Status;
 import tasks.SubTask;
 import tasks.Task;
 
 import java.util.ArrayList;
 
 public interface TaskManager {
-     ArrayList<Task> getHistory();
-     ArrayList<SubTask> getSubsFromEpic(int id);
+    ArrayList<Task> getHistory();
 
-     void deleteSub(int id);
+    ArrayList<SubTask> getSubsFromEpic(int id);
 
-     SubTask getSub(int id);
+    void deleteSub(int id);
 
-     void deleteTask(int id);
+    SubTask getSub(int id);
 
-     Task getTask(int id);
+    void deleteTask(int id);
 
-     void deleteEpic(int id);
+    Task getTask(int id);
 
-     Epic getEpic(int id);
+    void deleteEpic(int id);
 
-     void updateEpicStatus(int epicId);
+    Epic getEpic(int id);
 
-     void removeTasks();
+    void updateEpicStatus(int epicId);
 
-     void removeEpics();
+    void removeTasks();
 
-     void removeSubs();
+    void removeEpics();
 
-     Task updateTask(Task task);
+    void removeSubs();
 
-     Epic updateEpic(Epic epic);
+    Task updateTask(Task task);
 
-     SubTask updateSub(SubTask subTask);
+    Epic updateEpic(Epic epic);
 
-     Epic addEpic(Epic epic);
+    SubTask updateSub(SubTask subTask);
 
-     SubTask addSub(SubTask subTask);
+    Epic addEpic(Epic epic);
 
-     Task addTask(Task task);
+    SubTask addSub(SubTask subTask);
 
-     ArrayList<Epic> getAllEpics();
+    Task addTask(Task task);
 
-     ArrayList<SubTask> getAllSubs();
+    ArrayList<Epic> getAllEpics();
 
-     ArrayList<Task> getAllTasks();
+    ArrayList<SubTask> getAllSubs();
+
+    ArrayList<Task> getAllTasks();
 }
