@@ -1,6 +1,5 @@
 package test;
 
-import manager.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
 import org.junit.jupiter.api.Assertions;
@@ -11,16 +10,14 @@ import tasks.Task;
 
 public class HistoryManagerTest {
     private TaskManager taskManager;
-    private HistoryManager historyManager;
 
     @BeforeEach
     void beforeEach() {
         taskManager = Managers.getDefault();
-        historyManager = Managers.getDefaultHistory();
     }
 
     @Test
-    void historyManagerTest() {
+    void historyManagerTest() { //Я поменял здесь все на taskManager, потому что в taskManager и реализуется historyManager, и по сути мы в основном будем пользоваться как раз taskManager
         Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1");
         Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи1");
         Task task3 = new Task("Задача3", Status.NEW, "описаниеЗадачи1");
@@ -32,25 +29,46 @@ public class HistoryManagerTest {
         Task task9 = new Task("Задача9", Status.NEW, "описаниеЗадачи1");
         Task task10 = new Task("Задача10", Status.NEW, "описаниеЗадачи1");
         Task task11 = new Task("Задача11", Status.NEW, "описаниеЗадачи1");
-        historyManager.add(task);
-        Assertions.assertNotNull(historyManager.getHistory(), "Не пуст");
-        Assertions.assertEquals(historyManager.getHistory().size(), 1);
-        historyManager.add(task2);
-        historyManager.add(task3);
-        historyManager.add(task4);
-        historyManager.add(task5);
-        historyManager.add(task6);
-        historyManager.add(task7);
-        historyManager.add(task8);
-        historyManager.add(task9);
-        historyManager.add(task10);
-        historyManager.add(task11);
-        Assertions.assertEquals(historyManager.getHistory().get(0), task2);
+        Task task12 = new Task("Задача12", Status.NEW, "описаниеЗадачи1");
+        taskManager.addTask(task);
+        taskManager.getTask(task.getId());
+        Assertions.assertNotNull(taskManager.getHistory(), "Не пуст");
+        Assertions.assertEquals(taskManager.getHistory().size(), 1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+        taskManager.addTask(task4);
+        taskManager.addTask(task5);
+        taskManager.addTask(task6);
+        taskManager.addTask(task7);
+        taskManager.addTask(task8);
+        taskManager.addTask(task9);
+        taskManager.addTask(task10);
+        taskManager.addTask(task11);
+        taskManager.addTask(task12);
+        taskManager.getTask(task2.getId());
+        taskManager.getTask(task3.getId());
+        taskManager.getTask(task4.getId());
+        taskManager.getTask(task5.getId());
+        taskManager.getTask(task6.getId());
+        taskManager.getTask(task7.getId());
+        taskManager.getTask(task8.getId());
+        taskManager.getTask(task9.getId());
+        taskManager.getTask(task10.getId());
+        taskManager.getTask(task11.getId());
+        taskManager.getTask(task12.getId());
 
+        Assertions.assertEquals(taskManager.getHistory().get(0), task);
+        Assertions.assertEquals(taskManager.getHistory().size(), 12);
+
+        taskManager.getHistoryManager().remove(task12.getId());
+        Assertions.assertEquals(taskManager.getHistory().size(), 11);
+
+        taskManager.getTask(task.getId());
+        Assertions.assertEquals(taskManager.getHistory().getLast(), task);
     }
 
     @Test
-    void WhenUpdateTaskInHistoryIsNotTheSame() {
+    void updateTest() {
         Task task = new Task("Задача2", Status.NEW, "описаниеЗадачи1");
         taskManager.addTask(task);
         taskManager.getTask(task.getId());
