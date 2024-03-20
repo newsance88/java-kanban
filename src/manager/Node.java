@@ -1,6 +1,6 @@
 package manager;
 
-public class Node<T> {
+public class Node<T> { //часто ли приходится реализовывать подобные вещи?
     private T data;
     private Node<T> next;
     private Node<T> prev;
