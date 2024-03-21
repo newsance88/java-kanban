@@ -5,7 +5,7 @@ import tasks.Status;
 import tasks.SubTask;
 import tasks.Task;
 
-public class Main { //Здесь проверил, все работает
+public class Main {
     public static void main(String[] args) {
         TaskManager taskManager;
         taskManager = Managers.getDefault();

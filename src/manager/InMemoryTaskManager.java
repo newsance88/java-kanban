@@ -17,7 +17,7 @@ public class InMemoryTaskManager implements TaskManager {
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
-    public HistoryManager getHistoryManager() { // добавил метод
+    public HistoryManager getHistoryManager() {
         return historyManager;
     }
 
@@ -134,17 +134,29 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeTasks() {
+        for (int taskId : tasks.keySet()) {
+            historyManager.remove(taskId);
+        }
         tasks.clear();
     }
 
     @Override
     public void removeEpics() {
+        for (int taskId : epics.keySet()) {
+            historyManager.remove(taskId);
+        }
+        for (int taskId : subs.keySet()) {
+            historyManager.remove(taskId);
+        }
         epics.clear();
         subs.clear();
     }
 
     @Override
     public void removeSubs() {
+        for (int taskId : subs.keySet()) {
+            historyManager.remove(taskId);
+        }
         subs.clear();
         for (Epic epic : epics.values()) {
             epic.clearSubTaskId();
