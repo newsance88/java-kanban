@@ -4,7 +4,6 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -19,6 +18,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             this.prev = prev;
         }
     }
+
     private Map<Integer, Node> historyMap;
     private Node head;
     private Node tail;
@@ -52,6 +52,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         tail = node;
         historyMap.put(task.getId(), node);
     }
+
     private void removeNode(int id) {
         Node nodeToRemove = historyMap.remove(id);
         if (nodeToRemove == null) {
