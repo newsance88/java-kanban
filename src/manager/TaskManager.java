@@ -7,7 +7,6 @@ import tasks.Task;
 import java.util.ArrayList;
 
 public interface TaskManager {
-    HistoryManager getHistoryManager();
 
     ArrayList<Task> getHistory();
 

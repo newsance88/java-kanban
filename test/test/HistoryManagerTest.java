@@ -24,13 +24,10 @@ public class HistoryManagerTest {
         Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1");
         Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи1");
         Task task3 = new Task("Задача3", Status.NEW, "описаниеЗадачи1");
-        Task task4 = new Task("Задача4", Status.NEW, "описаниеЗадачи1");
-        Task task5 = new Task("Задача5", Status.NEW, "описаниеЗадачи1");
+
         taskManager.addTask(task);
         taskManager.addTask(task2);
         taskManager.addTask(task3);
-        taskManager.addTask(task4);
-        taskManager.addTask(task5);
         historyManager.add(task);
 
         Assertions.assertNotNull(historyManager.getHistory(), "Не пуст");
@@ -39,20 +36,31 @@ public class HistoryManagerTest {
 
         historyManager.add(task2);
         historyManager.add(task3);
-        historyManager.add(task4);
-        historyManager.add(task5);
-        Assertions.assertEquals(historyManager.getHistory().size(), 5);
 
         historyManager.remove(task.getId());
+        Assertions.assertEquals(historyManager.getHistory().get(0),task2);
+        Assertions.assertEquals(historyManager.getHistory().get(1),task3);
+        historyManager.remove(task2.getId());
+        historyManager.remove(task3.getId());
 
-        Assertions.assertEquals(historyManager.getHistory().size(), 4);
-        Assertions.assertFalse(historyManager.getHistory().contains(task));
-
-        historyManager.remove(task5.getId());
-        Assertions.assertFalse(historyManager.getHistory().contains(task5));
+        historyManager.add(task);
+        historyManager.add(task2);
+        historyManager.add(task3);
 
         historyManager.remove(task3.getId());
-        Assertions.assertFalse(historyManager.getHistory().contains(task3));
+        Assertions.assertEquals(historyManager.getHistory().get(0),task);
+        Assertions.assertEquals(historyManager.getHistory().get(1),task2);
+
+        historyManager.remove(task.getId());
+        historyManager.remove(task2.getId());
+
+        historyManager.add(task);
+        historyManager.add(task2);
+        historyManager.add(task3);
+
+        historyManager.remove(task2.getId());
+        Assertions.assertEquals(historyManager.getHistory().get(0),task);
+        Assertions.assertEquals(historyManager.getHistory().get(1),task3);
     }
 
     @Test
