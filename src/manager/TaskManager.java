@@ -7,6 +7,7 @@ import tasks.Task;
 import java.util.ArrayList;
 
 public interface TaskManager {
+
     ArrayList<Task> getHistory();
 
     ArrayList<SubTask> getSubsFromEpic(int id);
