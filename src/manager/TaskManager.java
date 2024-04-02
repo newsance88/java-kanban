@@ -1,5 +1,6 @@
 package manager;
 
+import exceptions.ManagerSaveException;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
@@ -10,43 +11,43 @@ public interface TaskManager {
 
     ArrayList<Task> getHistory();
 
-    ArrayList<SubTask> getSubsFromEpic(int id);
+    ArrayList<SubTask> getSubsFromEpic(int id) throws ManagerSaveException;
 
-    void deleteSub(int id);
+    void deleteSub(int id) throws ManagerSaveException;
 
-    SubTask getSub(int id);
+    SubTask getSub(int id) throws ManagerSaveException;
 
-    void deleteTask(int id);
+    void deleteTask(int id) throws ManagerSaveException;
 
-    Task getTask(int id);
+    Task getTask(int id) throws ManagerSaveException;
 
-    void deleteEpic(int id);
+    void deleteEpic(int id) throws ManagerSaveException;
 
-    Epic getEpic(int id);
+    Epic getEpic(int id) throws ManagerSaveException;
 
-    void updateEpicStatus(int epicId);
+    void updateEpicStatus(int epicId) throws ManagerSaveException;
 
-    void removeTasks();
+    void removeTasks() throws ManagerSaveException;
 
-    void removeEpics();
+    void removeEpics() throws ManagerSaveException;
 
-    void removeSubs();
+    void removeSubs() throws ManagerSaveException;
 
-    Task updateTask(Task task);
+    Task updateTask(Task task) throws ManagerSaveException;
 
-    Epic updateEpic(Epic epic);
+    Epic updateEpic(Epic epic) throws ManagerSaveException;
 
-    SubTask updateSub(SubTask subTask);
+    SubTask updateSub(SubTask subTask) throws ManagerSaveException;
 
-    Epic addEpic(Epic epic);
+    Epic addEpic(Epic epic) throws ManagerSaveException;
 
-    SubTask addSub(SubTask subTask);
+    SubTask addSub(SubTask subTask) throws ManagerSaveException;
 
-    Task addTask(Task task);
+    Task addTask(Task task) throws ManagerSaveException;
 
-    ArrayList<Epic> getAllEpics();
+    ArrayList<Epic> getAllEpics() throws ManagerSaveException;
 
-    ArrayList<SubTask> getAllSubs();
+    ArrayList<SubTask> getAllSubs() throws ManagerSaveException;
 
-    ArrayList<Task> getAllTasks();
+    ArrayList<Task> getAllTasks() throws ManagerSaveException;
 }

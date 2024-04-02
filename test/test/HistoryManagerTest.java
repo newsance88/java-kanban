@@ -1,5 +1,6 @@
 package test;
 
+import exceptions.ManagerSaveException;
 import manager.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
@@ -20,7 +21,7 @@ public class HistoryManagerTest {
     }
 
     @Test
-    void historyManagerTest() {
+    void historyManagerTest() throws ManagerSaveException {
         Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1");
         Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи1");
         Task task3 = new Task("Задача3", Status.NEW, "описаниеЗадачи1");
@@ -38,8 +39,8 @@ public class HistoryManagerTest {
         historyManager.add(task3);
 
         historyManager.remove(task.getId());
-        Assertions.assertEquals(historyManager.getHistory().get(0),task2);
-        Assertions.assertEquals(historyManager.getHistory().get(1),task3);
+        Assertions.assertEquals(historyManager.getHistory().get(0), task2);
+        Assertions.assertEquals(historyManager.getHistory().get(1), task3);
         historyManager.remove(task2.getId());
         historyManager.remove(task3.getId());
 
@@ -48,8 +49,8 @@ public class HistoryManagerTest {
         historyManager.add(task3);
 
         historyManager.remove(task3.getId());
-        Assertions.assertEquals(historyManager.getHistory().get(0),task);
-        Assertions.assertEquals(historyManager.getHistory().get(1),task2);
+        Assertions.assertEquals(historyManager.getHistory().get(0), task);
+        Assertions.assertEquals(historyManager.getHistory().get(1), task2);
 
         historyManager.remove(task.getId());
         historyManager.remove(task2.getId());
@@ -59,12 +60,12 @@ public class HistoryManagerTest {
         historyManager.add(task3);
 
         historyManager.remove(task2.getId());
-        Assertions.assertEquals(historyManager.getHistory().get(0),task);
-        Assertions.assertEquals(historyManager.getHistory().get(1),task3);
+        Assertions.assertEquals(historyManager.getHistory().get(0), task);
+        Assertions.assertEquals(historyManager.getHistory().get(1), task3);
     }
 
     @Test
-    void updateTest() {
+    void updateTest() throws ManagerSaveException {
         Task task = new Task("Задача2", Status.NEW, "описаниеЗадачи1");
         taskManager.addTask(task);
         historyManager.add(task);

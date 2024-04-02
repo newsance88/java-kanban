@@ -1,5 +1,6 @@
 package test;
 
+import exceptions.ManagerSaveException;
 import manager.Managers;
 import manager.TaskManager;
 import org.junit.jupiter.api.Assertions;
@@ -21,7 +22,7 @@ public class TaskManagerTest {
     }
 
     @Test
-    void addNewTasks() {
+    void addNewTasks() throws ManagerSaveException {
         Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1");
         taskManager.addTask(task);
         final Task savedTask = taskManager.getTask(task.getId());
@@ -54,7 +55,7 @@ public class TaskManagerTest {
     }
 
     @Test
-    void testUpdateTasks() {
+    void testUpdateTasks() throws ManagerSaveException {
         Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1");
 
         taskManager.addTask(task);
