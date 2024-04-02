@@ -84,7 +84,7 @@ public class FileBackedTaskManagerTest {
 
     @Test
     void loadFromFileTest() throws ManagerSaveException {
-        FileBackedTaskManager fileBackedTaskManager = loadFromFile(new File("C:\\Users\\Владелец\\Documents\\GitHub\\java-kanban\\test\\test\\DataTest"));
+        FileBackedTaskManager fileBackedTaskManager = loadFromFile(new File("test/test/DataTest"));
         Task task = new Task("name1", Status.NEW, "desr1", 1);
         Assertions.assertEquals(task, fileBackedTaskManager.getTask(1));
     }
