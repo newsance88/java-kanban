@@ -6,6 +6,8 @@ public class Task {
     protected int id;
     protected String name;
     protected Status status;
+
+    private TaskType type = TaskType.TASK;
     protected String description;
 
     public Task(String name, Status status, String description) {
@@ -27,6 +29,10 @@ public class Task {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public TaskType getType() {
+        return type;
     }
 
     public Status getStatus() {

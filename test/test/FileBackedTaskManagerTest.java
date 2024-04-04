@@ -1,10 +1,7 @@
 package test;
 
 import exceptions.ManagerSaveException;
-import manager.FileBackedTaskManager;
-import manager.HistoryManager;
-import manager.Managers;
-import manager.TaskManager;
+import manager.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,9 +74,9 @@ public class FileBackedTaskManagerTest {
         historyManager.add(task);
         historyManager.add(task2);
         historyManager.add(task3);
-        Assertions.assertEquals(fileBackedTaskManager.historyToString(historyManager), "1,2,3");
-        String str = fileBackedTaskManager.historyToString(historyManager);
-        Assertions.assertEquals(fileBackedTaskManager.historyFromString(str), new ArrayList<Integer>(Arrays.asList(1, 2, 3)));
+        Assertions.assertEquals(FormatManager.historyToString(historyManager), "1,2,3");
+        String str = FormatManager.historyToString(historyManager);
+        Assertions.assertEquals(FormatManager.historyFromString(str), new ArrayList<Integer>(Arrays.asList(1, 2, 3)));
     }
 
     @Test
@@ -93,7 +90,7 @@ public class FileBackedTaskManagerTest {
     void fromStringToStringTest() throws ManagerSaveException {
         Task task = new Task("name1", Status.NEW, "desr1");
         fileBackedTaskManager.addTask(task);
-        Assertions.assertEquals(task, fileBackedTaskManager.fromString("1,Task,name1,NEW,desr1"));
-        Assertions.assertEquals(fileBackedTaskManager.toString(task), "1,Task,name1,NEW,desr1");
+        Assertions.assertEquals(task, FormatManager.fromString("1,TASK,name1,NEW,desr1"));
+        Assertions.assertEquals(FormatManager.toString(task), "1,TASK,name1,NEW,desr1");
     }
 }
