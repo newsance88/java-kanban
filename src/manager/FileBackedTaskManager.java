@@ -2,10 +2,7 @@ package manager;
 
 
 import exceptions.ManagerSaveException;
-import tasks.Epic;
-import tasks.Status;
-import tasks.SubTask;
-import tasks.Task;
+import tasks.*;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -27,11 +24,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     private File dataFile;
-    private Path dataFilePath;
 
     public FileBackedTaskManager(File dataFile) {
         this.dataFile = dataFile;
-        this.dataFilePath = Path.of(dataFile.getPath());
     }
 
     public File getDataFile() {
@@ -46,12 +41,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             while ((line = reader.readLine()) != null) {
                 Task task = FormatManager.fromString(line);
                 if (task != null) {
-                    if (task instanceof SubTask) {
-                        fileBackedTaskManager.addSub((SubTask) task);
-                    } else if (task instanceof Epic) {
-                        fileBackedTaskManager.addEpic((Epic) task);
+                    if (task.getType().equals(TaskType.SUBTASK)) {
+                        fileBackedTaskManager.subs.put(task.getId(), (SubTask) task);
+                    } else if (task.getType().equals(TaskType.EPIC)) {
+                        fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
                     } else {
-                        fileBackedTaskManager.addTask(task);
+                        fileBackedTaskManager.tasks.put(task.getId(), task);
                     }
                 } else {
                     if (!line.isEmpty()) {
@@ -61,11 +56,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                             SubTask existingSubTask = fileBackedTaskManager.getSub(id);
                             Epic existingEpic = fileBackedTaskManager.getEpic(id);
                             if (existingTask != null) {
-                                fileBackedTaskManager.getHistoryManager().add(existingTask);
+                                fileBackedTaskManager.historyManager.add(existingTask);
                             } else if (existingSubTask != null) {
-                                fileBackedTaskManager.getHistoryManager().add(existingSubTask);
+                                fileBackedTaskManager.historyManager.add(existingSubTask);
                             } else if (existingEpic != null) {
-                                fileBackedTaskManager.getHistoryManager().add(existingEpic);
+                                fileBackedTaskManager.historyManager.add(existingEpic);
                             }
                         }
                     }
@@ -90,7 +85,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 writer.write(FormatManager.toString(task));
                 writer.write("\n");
             }
-            writer.write(FormatManager.historyToString(super.getHistoryManager()));
+            writer.write(FormatManager.historyToString(super.getHistory()));
 
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка сохранения", e);
@@ -136,6 +131,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         save();
         return epic;
     }
+
     @Override
     public void removeTasks() {
         super.removeTasks();

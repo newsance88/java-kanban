@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FormatManager {
-    public static String historyToString(HistoryManager manager) {
+    public static String historyToString(ArrayList<Task> historyList) {
         StringBuilder history = new StringBuilder();
-        for (int i = 0; i < manager.getHistory().size(); i++) {
+        for (int i = 0; i < historyList.size(); i++) {
             if (i == 0) {
-                history.append(manager.getHistory().get(i).getId());
+                history.append(historyList.get(i).getId());
             } else {
-                history.append(",").append(manager.getHistory().get(i).getId());
+                history.append(",").append(historyList.get(i).getId());
             }
         }
         return history.toString();
