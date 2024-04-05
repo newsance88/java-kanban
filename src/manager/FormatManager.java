@@ -34,29 +34,19 @@ public class FormatManager {
     public static Task fromString(String value) {
         if (!value.isEmpty() && !value.startsWith("id")) {
             String[] taskValues = value.split(",");
-            if (taskValues.length >= 2) {
-                if (taskValues[1].equals("TASK")) {
-                    Task task = new Task("", Status.NEW, "");
-                    task.setId(Integer.parseInt(taskValues[0]));
-                    task.setName(taskValues[2]);
-                    task.setStatus(Status.valueOf(taskValues[3]));
-                    task.setDescription(taskValues[4]);
-                    return task;
-                } else if (taskValues[1].equals("EPIC")) {
-                    Epic epic = new Epic("", Status.NEW, "");
-                    epic.setId(Integer.parseInt(taskValues[0]));
-                    epic.setName(taskValues[2]);
-                    epic.setStatus(Status.valueOf(taskValues[3]));
-                    epic.setDescription(taskValues[4]);
-                    return epic;
-                } else if (taskValues[1].equals("SUBTASK")) {
-                    SubTask subTask = new SubTask("", Status.NEW, "", 0);
-                    subTask.setId(Integer.parseInt(taskValues[0]));
-                    subTask.setName(taskValues[2]);
-                    subTask.setStatus(Status.valueOf(taskValues[3]));
-                    subTask.setDescription(taskValues[4]);
-                    subTask.setEpicId(Integer.parseInt(taskValues[5]));
-                    return subTask;
+            if (taskValues.length >= 2 && !value.startsWith("id") && (value.contains("EPIC") || value.contains("TASK") || value.contains("SUBTASK"))) {
+                int id = Integer.parseInt(taskValues[0]);
+                TaskType type = TaskType.valueOf(taskValues[1]);
+                String name = taskValues[2];
+                Status status = Status.valueOf(taskValues[3]);
+                String description = taskValues[4];
+                if (type.equals(TaskType.TASK)) {
+                    return new Task(name, status, description, id);
+                } else if (type.equals(TaskType.EPIC)) {
+                    return new Epic(name, status, description, id);
+                } else if (type.equals(TaskType.SUBTASK)) {
+                    int epicId = Integer.parseInt(taskValues[5]);
+                    return new SubTask(name, status, description, epicId, id);
                 }
             }
 

@@ -7,7 +7,6 @@ public class Task {
     protected String name;
     protected Status status;
 
-    private TaskType type = TaskType.TASK;
     protected String description;
 
     public Task(String name, Status status, String description) {
@@ -32,7 +31,7 @@ public class Task {
     }
 
     public TaskType getType() {
-        return type;
+        return TaskType.TASK;
     }
 
     public Status getStatus() {
