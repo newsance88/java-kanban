@@ -37,39 +37,37 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             reader.readLine();
-            while ((line = reader.readLine()) != null) {
-                Task task = FormatManager.fromString(line);
-                if (task != null) {
-                    if (task.getType().equals(TaskType.SUBTASK)) {
-                        fileBackedTaskManager.subs.put(task.getId(), (SubTask) task);
-                        Epic epic = fileBackedTaskManager.getEpic(((SubTask) task).getEpicId());
-                        ArrayList<Integer> ids = epic.getSubTaskId();
-                        ids.add(task.getId());
-                        epic.setSubTaskId(ids);
-                    } else if (task.getType().equals(TaskType.EPIC)) {
-                        fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
-                    } else {
-                        fileBackedTaskManager.tasks.put(task.getId(), task);
-                    }
-                } else {
-                    if (!line.isEmpty()) {
-                        List<Integer> list = FormatManager.historyFromString(line);
-                        for (int id : list) {
-                            Task existingTask = fileBackedTaskManager.getTask(id);
-                            SubTask existingSubTask = fileBackedTaskManager.getSub(id);
-                            Epic existingEpic = fileBackedTaskManager.getEpic(id);
-                            if (existingTask != null) {
-                                fileBackedTaskManager.historyManager.add(existingTask);
-                            } else if (existingSubTask != null) {
-                                fileBackedTaskManager.historyManager.add(existingSubTask);
-                            } else if (existingEpic != null) {
-                                fileBackedTaskManager.historyManager.add(existingEpic);
-                            }
-                        }
-                    }
-                }
+            while ((line = reader.readLine()) != null && !line.isEmpty()) {
 
+                Task task = FormatManager.fromString(line);
+
+                if (task.getType().equals(TaskType.SUBTASK)) {
+                    fileBackedTaskManager.subs.put(task.getId(), (SubTask) task);
+                    Epic epic = fileBackedTaskManager.getEpic(((SubTask) task).getEpicId());
+                    fileBackedTaskManager.historyManager.remove(epic.getId());
+                    epic.getSubTaskId().add(task.getId());
+                } else if (task.getType().equals(TaskType.EPIC)) {
+                    fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
+                } else {
+                    fileBackedTaskManager.tasks.put(task.getId(), task);
+                }
             }
+
+            String line1 = reader.readLine();
+            List<Integer> list = FormatManager.historyFromString(line1);
+            for (int id : list) {
+                Task existingTask = fileBackedTaskManager.getTask(id);
+                SubTask existingSubTask = fileBackedTaskManager.getSub(id);
+                Epic existingEpic = fileBackedTaskManager.getEpic(id);
+                if (existingTask != null) {
+                    fileBackedTaskManager.historyManager.add(existingTask);
+                } else if (existingSubTask != null) {
+                    fileBackedTaskManager.historyManager.add(existingSubTask);
+                } else if (existingEpic != null) {
+                    fileBackedTaskManager.historyManager.add(existingEpic);
+                }
+            }
+
 
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка сохранения", e);
@@ -88,6 +86,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 writer.write(FormatManager.toString(task));
                 writer.write("\n");
             }
+            writer.write("\n");
             writer.write(FormatManager.historyToString(super.getHistory()));
 
         } catch (IOException e) {
