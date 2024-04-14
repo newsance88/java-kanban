@@ -24,8 +24,6 @@ public interface TaskManager {
 
     Epic getEpic(int id);
 
-    void updateEpicStatus(int epicId);
-
     void removeTasks();
 
     void removeEpics();
