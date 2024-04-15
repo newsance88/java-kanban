@@ -23,7 +23,7 @@ public class TaskManagerTest {
 
     @Test
     void addNewTasks() throws ManagerSaveException {
-        Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1");
+        Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1",null,null);
         taskManager.addTask(task);
         final Task savedTask = taskManager.getTask(task.getId());
         Assertions.assertNotNull(savedTask, "Задача не найдена.");
@@ -43,7 +43,7 @@ public class TaskManagerTest {
         Assertions.assertEquals(1, epics.size(), "Неверное количество задач.");
         Assertions.assertEquals(epic, epics.get(0), "Задачи не совпадают.");
 
-        SubTask subTask = new SubTask("Задача1", Status.NEW, "описаниеЗадачи1", epic.getId());
+        SubTask subTask = new SubTask("Задача1", Status.NEW, "описаниеЗадачи1", epic.getId(),null,null);
         taskManager.addSub(subTask);
         final SubTask savedSub = taskManager.getSub(subTask.getId());
         Assertions.assertNotNull(savedSub, "Задача не найдена.");
@@ -56,7 +56,7 @@ public class TaskManagerTest {
 
     @Test
     void testUpdateTasks() throws ManagerSaveException {
-        Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1");
+        Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1",null,null);
 
         taskManager.addTask(task);
         taskManager.getTask(task.getId());
@@ -66,7 +66,7 @@ public class TaskManagerTest {
 
         taskManager.addEpic(epic);
         taskManager.getEpic(epic.getId());
-        SubTask subTask = new SubTask("Сабтаск1", Status.NEW, "описаниеЗадачи1", epic.getId());
+        SubTask subTask = new SubTask("Сабтаск1", Status.NEW, "описаниеЗадачи1", epic.getId(),null,null);
         taskManager.addSub(subTask);
         taskManager.getSub(subTask.getId());
         Assertions.assertEquals(taskManager.getHistory().size(), 3);
@@ -96,9 +96,9 @@ public class TaskManagerTest {
 
     @Test
     void equalsTest() {
-        Task task1 = new Task("Задача1", Status.NEW, "описаниеЗадачи1");
-        Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи2");
-        Task task3 = new Task("Задача1", Status.NEW, "описаниеЗадачи1");
+        Task task1 = new Task("Задача1", Status.NEW, "описаниеЗадачи1",null,null);
+        Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи2",null,null);
+        Task task3 = new Task("Задача1", Status.NEW, "описаниеЗадачи1",null,null);
         Assertions.assertEquals(task1, task3, "Не равны");
         Assertions.assertNotEquals(task1, task2);
         task1.setName("Задача11");

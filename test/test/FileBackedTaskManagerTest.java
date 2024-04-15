@@ -26,9 +26,9 @@ public class FileBackedTaskManagerTest {
     void fileBackedmanagerTest() throws IOException {
 
         FileBackedTaskManager originalManager = new FileBackedTaskManager(File.createTempFile("prefix", "sufix"));
-        originalManager.addTask(new Task("Task1", Status.NEW, "Description1"));
+        originalManager.addTask(new Task("Task1", Status.NEW, "Description1",null,null));
         originalManager.addEpic(new Epic("Epic2", Status.IN_PROGRESS, "Description2"));
-        originalManager.addSub(new SubTask("SubTask3", Status.DONE, "Description3", 2));
+        originalManager.addSub(new SubTask("SubTask3", Status.DONE, "Description3", 2,null,null));
         originalManager.getTask(1);
         originalManager.getEpic(2);
         originalManager.getSub(3);

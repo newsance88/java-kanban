@@ -5,6 +5,8 @@ import tasks.Status;
 import tasks.SubTask;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,6 +17,32 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, SubTask> subs = new HashMap<>();
 
     protected HistoryManager historyManager = Managers.getDefaultHistory();
+    public void updateEpicTime(Epic epic) {
+        LocalDateTime endTime = LocalDateTime.of(1000,1,1,1,1);
+        long duration = 0;
+        LocalDateTime startTime = LocalDateTime.of(3000,12,21,21,12);
+        ArrayList<Integer> list = epic.getSubTaskId();
+        if (list.isEmpty()) {
+            epic.setDuration(null);
+            epic.setEndTime(null);
+            epic.setStartTime(null);
+            return;
+        }
+        for (int number : list) {
+            SubTask sub = subs.get(number);
+            if (sub.getStartTime().isBefore(startTime)) {
+                startTime = sub.getStartTime();
+            }
+            duration = duration + sub.getDuration().toMinutes();
+            if (sub.getEndTime().isAfter(endTime)) {
+                endTime = sub.getEndTime();
+            }
+        }
+        epic.setEndTime(endTime);
+        epic.setStartTime(startTime);
+        epic.setDuration(Duration.ofMinutes(duration));
+
+    }
 
     @Override
     public ArrayList<Task> getHistory() {
