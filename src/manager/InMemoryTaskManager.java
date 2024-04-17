@@ -9,18 +9,57 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id;
     protected HashMap<Integer, Task> tasks = new HashMap<>();
     protected HashMap<Integer, Epic> epics = new HashMap<>();
     protected HashMap<Integer, SubTask> subs = new HashMap<>();
+    protected TreeSet<Task> prioritizedTasks = new TreeSet<>((task1, task2) -> {
+        LocalDateTime startTime1 = task1.getStartTime();
+        LocalDateTime startTime2 = task2.getStartTime();
+
+        if (startTime1 == null && startTime2 == null) {
+            return task1.getId() - task2.getId();
+        } else if (startTime1 == null) {
+            return 1;
+        } else if (startTime2 == null) {
+            return -1;
+        } else {
+            int tm = startTime1.compareTo(startTime2);
+            if (tm == 0) return task1.getId() - task2.getId();
+            return tm;
+        }
+    });
 
     protected HistoryManager historyManager = Managers.getDefaultHistory();
+    @Override
+    public boolean ifTasksNotCross(Task task1,Task task2) {
+        if (task1.getEndTime()!=null && task2.getEndTime()!=null) {
+            return task1.getEndTime().isBefore(task2.getStartTime());
+        }
+         return true;
+    }
+
+    public TreeSet<Task> getPrioritizedTasks() {
+
+
+        prioritizedTasks.addAll(tasks.values());
+
+        prioritizedTasks.addAll(epics.values());
+        prioritizedTasks.addAll(subs.values());
+
+
+        return new TreeSet<>(prioritizedTasks);
+    }
+
     public void updateEpicTime(Epic epic) {
-        LocalDateTime endTime = LocalDateTime.of(1000,1,1,1,1);
+        LocalDateTime endTime = LocalDateTime.of(1000, 1, 1, 1, 1);
         long duration = 0;
-        LocalDateTime startTime = LocalDateTime.of(3000,12,21,21,12);
+        LocalDateTime startTime = LocalDateTime.of(3000, 12, 21, 21, 12);
         ArrayList<Integer> list = epic.getSubTaskId();
         if (list.isEmpty()) {
             epic.setDuration(null);
@@ -30,11 +69,14 @@ public class InMemoryTaskManager implements TaskManager {
         }
         for (int number : list) {
             SubTask sub = subs.get(number);
+            if ((sub.getStartTime() == null) || (sub.getEndTime() == null) || (sub.getDuration() == null)) {
+                continue;
+            }
             if (sub.getStartTime().isBefore(startTime)) {
                 startTime = sub.getStartTime();
             }
             duration = duration + sub.getDuration().toMinutes();
-            if (sub.getEndTime().isAfter(endTime)) {
+            if (sub.getEndTime().isAfter(endTime) && !(sub.getEndTime() == null)) {
                 endTime = sub.getEndTime();
             }
         }
@@ -52,12 +94,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<SubTask> getSubsFromEpic(int id) {
         Epic epic = epics.get(id);
-        ArrayList<SubTask> subList = new ArrayList<>();
-        for (int number : epic.getSubTaskId()) {
-            subList.add(subs.get(number));
-        }
-        return subList;
+        return epic.getSubTaskId().stream()
+                .map(subs::get)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
+
 
     @Override
     public void deleteSub(int id) {
@@ -104,13 +145,11 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic == null) {
             return;
         }
-        ArrayList<Integer> subTaskKeysToDelete = epic.getSubTaskId();
-        for (int number : subTaskKeysToDelete) {
-            subs.remove(number);
-            historyManager.remove(number);
-        }
-        epics.remove(id);
-        historyManager.remove(id);
+        epic.getSubTaskId().stream()
+                .forEach(subTaskId -> {
+            subs.remove(subTaskId);
+            historyManager.remove(subTaskId);
+        });
     }
 
     @Override
@@ -157,33 +196,24 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeTasks() {
-        for (int taskId : tasks.keySet()) {
-            historyManager.remove(taskId);
-        }
+        tasks.keySet().forEach(historyManager::remove);
         tasks.clear();
     }
 
+
     @Override
     public void removeEpics() {
-        for (int taskId : epics.keySet()) {
-            historyManager.remove(taskId);
-        }
-        for (int taskId : subs.keySet()) {
-            historyManager.remove(taskId);
-        }
+        epics.keySet().stream().forEach(historyManager::remove);
+        subs.keySet().stream().forEach(historyManager::remove);
         epics.clear();
         subs.clear();
     }
 
     @Override
     public void removeSubs() {
-        for (int taskId : subs.keySet()) {
-            historyManager.remove(taskId);
-        }
+        subs.keySet().stream().forEach(historyManager::remove);
         subs.clear();
-        for (Epic epic : epics.values()) {
-            epic.clearSubTaskId();
-        }
+        epics.values().forEach(Epic::clearSubTaskId);
     }
 
     @Override
@@ -232,6 +262,12 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public SubTask addSub(SubTask subTask) {
         if (epics.containsKey(subTask.getEpicId())) {
+            List<Task> list = getPrioritizedTasks().stream()
+                    .filter(subtask1 -> !ifTasksNotCross(subtask1,subTask))
+                    .toList();
+            if (!list.isEmpty()) {
+                System.out.println("Задача пересекается");
+            }
             id++;
             subTask.setId(id);
             subs.put(id, subTask);
@@ -247,6 +283,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task addTask(Task task) {
+        List<Task> list = getPrioritizedTasks().stream()
+                .filter(task1 -> !ifTasksNotCross(task1,task))
+                .toList();
+        if (!list.isEmpty()) {
+            System.out.println("Задача пересекается");
+        }
         id++;
         task.setId(id);
         tasks.put(id, task);

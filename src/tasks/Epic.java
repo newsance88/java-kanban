@@ -45,18 +45,19 @@ public class Epic extends Task {
     }
 
     @Override
-    public String toString() {
-        return "Epic{" +
-                "subTaskId=" + subTaskId +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", status=" + status +
-                ", description='" + description + '\'' +
-                '}';
-    }
-    @Override
     public LocalDateTime getEndTime() {
         return endTime;
     }
 
+    @Override
+    public String toString() {
+        return "Epic{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

@@ -21,7 +21,7 @@ public class Task {
         this.startTime = startTime;
     }
 
-    public Task(String name, Status status, String description, int id,Duration duration, LocalDateTime startTime) {
+    public Task(String name, Status status, String description, int id, Duration duration, LocalDateTime startTime) {
         this.name = name;
         this.status = status;
         this.id = id;
@@ -29,6 +29,7 @@ public class Task {
         this.duration = duration;
         this.startTime = startTime;
     }
+
     public Task(String name, Status status, String description, int id) {
         this.name = name;
         this.status = status;
@@ -72,7 +73,11 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
+
     public LocalDateTime getEndTime() {
+        if (startTime == null || duration == null) {
+            return null;
+        }
         return startTime.plus(duration);
     }
 
@@ -92,16 +97,6 @@ public class Task {
         this.startTime = startTime;
     }
 
-    @Override
-    public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", status=" + status +
-                ", description='" + description + '\'' +
-                '}';
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -116,4 +111,15 @@ public class Task {
         return Objects.hash(id, name, status, description);
     }
 
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

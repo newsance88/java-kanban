@@ -11,17 +11,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
-    public static void main(String[] args) throws ManagerSaveException { //Реализовал сценарий, все работаеи
+    public static void main(String[] args) throws ManagerSaveException {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(new File("Data"));
-        fileBackedTaskManager.addTask(new Task("name1", Status.NEW, "desr1", Duration.ofMinutes(5), LocalDateTime.now()));
+        fileBackedTaskManager.addTask(new Task("name1", Status.NEW, "desr1", null,null));
         fileBackedTaskManager.addEpic(new Epic("epic1", Status.NEW, "descr2"));
         fileBackedTaskManager.addSub(new SubTask("sub1", Status.NEW, "descr3", 2, Duration.ofMinutes(10), LocalDateTime.now()));
         fileBackedTaskManager.addSub(new SubTask("sub2", Status.NEW, "descr4", 2, Duration.ofMinutes(10), LocalDateTime.now().plus(Duration.ofDays(2))));
         fileBackedTaskManager.getTask(1);
-        fileBackedTaskManager.getTask(3);
+        fileBackedTaskManager.getSub(3);
+
         //fileBackedTaskManager.removeSubs();
-        System.out.println(fileBackedTaskManager.getEpic(2).getDuration());
+        //System.out.println(fileBackedTaskManager.getEpic(2).getDuration());
         FileBackedTaskManager fileBackedTaskManager1 = loadFromFile(new File("Data"));
+        System.out.println(fileBackedTaskManager1.getPrioritizedTasks());
         //System.out.println(fileBackedTaskManager1.getAllSubs());
         //System.out.println(fileBackedTaskManager1.getAllTasks());
         //System.out.println(fileBackedTaskManager1.getAllEpics());
