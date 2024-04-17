@@ -36,12 +36,13 @@ public class InMemoryTaskManager implements TaskManager {
     });
 
     protected HistoryManager historyManager = Managers.getDefaultHistory();
+
     @Override
-    public boolean ifTasksNotCross(Task task1,Task task2) {
-        if (task1.getEndTime()!=null && task2.getEndTime()!=null) {
+    public boolean ifTasksNotCross(Task task1, Task task2) {
+        if (task1.getEndTime() != null && task2.getEndTime() != null) {
             return task1.getEndTime().isBefore(task2.getStartTime());
         }
-         return true;
+        return true;
     }
 
     public TreeSet<Task> getPrioritizedTasks() {
@@ -147,9 +148,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
         epic.getSubTaskId().stream()
                 .forEach(subTaskId -> {
-            subs.remove(subTaskId);
-            historyManager.remove(subTaskId);
-        });
+                    subs.remove(subTaskId);
+                    historyManager.remove(subTaskId);
+                });
     }
 
     @Override
@@ -263,7 +264,7 @@ public class InMemoryTaskManager implements TaskManager {
     public SubTask addSub(SubTask subTask) {
         if (epics.containsKey(subTask.getEpicId())) {
             List<Task> list = getPrioritizedTasks().stream()
-                    .filter(subtask1 -> !ifTasksNotCross(subtask1,subTask))
+                    .filter(subtask1 -> !ifTasksNotCross(subtask1, subTask))
                     .toList();
             if (!list.isEmpty()) {
                 System.out.println("Задача пересекается");
@@ -284,7 +285,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task addTask(Task task) {
         List<Task> list = getPrioritizedTasks().stream()
-                .filter(task1 -> !ifTasksNotCross(task1,task))
+                .filter(task1 -> !ifTasksNotCross(task1, task))
                 .toList();
         if (!list.isEmpty()) {
             System.out.println("Задача пересекается");

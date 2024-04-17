@@ -7,7 +7,7 @@ import tasks.Task;
 import java.util.ArrayList;
 
 public interface TaskManager {
-    boolean ifTasksNotCross(Task task1,Task task2);
+    boolean ifTasksNotCross(Task task1, Task task2);
 
     ArrayList<Task> getHistory();
 

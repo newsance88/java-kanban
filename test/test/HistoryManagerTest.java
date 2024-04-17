@@ -22,9 +22,9 @@ public class HistoryManagerTest {
 
     @Test
     void historyManagerTest() throws ManagerSaveException {
-        Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1",null,null);
-        Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи1",null,null);
-        Task task3 = new Task("Задача3", Status.NEW, "описаниеЗадачи1",null,null);
+        Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1", null, null);
+        Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи1", null, null);
+        Task task3 = new Task("Задача3", Status.NEW, "описаниеЗадачи1", null, null);
 
         taskManager.addTask(task);
         taskManager.addTask(task2);
@@ -66,7 +66,7 @@ public class HistoryManagerTest {
 
     @Test
     void updateTest() throws ManagerSaveException {
-        Task task = new Task("Задача2", Status.NEW, "описаниеЗадачи1",null,null);
+        Task task = new Task("Задача2", Status.NEW, "описаниеЗадачи1", null, null);
         taskManager.addTask(task);
         historyManager.add(task);
         Task updatedTask = new Task("Обновил2", Status.NEW, "описаниеЗадачи1", task.getId());

@@ -22,29 +22,31 @@ public class InMemoryTaskManagerTest {
     void beforeEach() {
         taskManager = Managers.getDefault();
     }
+
     @Test
     void statusTest() {
         Task task1 = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.now());
         Epic epic = new Epic("Задача2", Status.NEW, "описаниеЗадачи1");
-        SubTask subTask = new SubTask("Задача3", Status.NEW, "описаниеЗадачи1", 2, Duration.ofMinutes(5),LocalDateTime.of(2000,2,2,2,2));
-        SubTask subTask2 = new SubTask("Задача4", Status.NEW, "описаниеЗадачи1", 2, Duration.ofMinutes(5),LocalDateTime.of(3000,2,2,2,2));
+        SubTask subTask = new SubTask("Задача3", Status.NEW, "описаниеЗадачи1", 2, Duration.ofMinutes(5), LocalDateTime.of(2000, 2, 2, 2, 2));
+        SubTask subTask2 = new SubTask("Задача4", Status.NEW, "описаниеЗадачи1", 2, Duration.ofMinutes(5), LocalDateTime.of(3000, 2, 2, 2, 2));
         taskManager.addTask(task1);
         taskManager.addEpic(epic);
         taskManager.addSub(subTask);
         taskManager.addSub(subTask2);
-        Assertions.assertEquals(taskManager.getEpic(2).getStatus(),Status.NEW);
-        SubTask subTask3 = new SubTask("Задача3", Status.IN_PROGRESS, "описаниеЗадачи1", 2, Duration.ofMinutes(5),LocalDateTime.of(4000,2,2,2,2));
+        Assertions.assertEquals(taskManager.getEpic(2).getStatus(), Status.NEW);
+        SubTask subTask3 = new SubTask("Задача3", Status.IN_PROGRESS, "описаниеЗадачи1", 2, Duration.ofMinutes(5), LocalDateTime.of(4000, 2, 2, 2, 2));
         taskManager.addSub(subTask3);
-        Assertions.assertEquals(taskManager.getEpic(2).getStatus(),Status.IN_PROGRESS);
+        Assertions.assertEquals(taskManager.getEpic(2).getStatus(), Status.IN_PROGRESS);
         taskManager.removeSubs();
-        SubTask subTask4 = new SubTask("Задача4", Status.DONE, "описаниеЗадачи1", 2, Duration.ofMinutes(5),LocalDateTime.of(4000,2,2,2,2));
+        SubTask subTask4 = new SubTask("Задача4", Status.DONE, "описаниеЗадачи1", 2, Duration.ofMinutes(5), LocalDateTime.of(4000, 2, 2, 2, 2));
         taskManager.addSub(subTask4);
-        Assertions.assertEquals(taskManager.getEpic(2).getStatus(),Status.DONE);
+        Assertions.assertEquals(taskManager.getEpic(2).getStatus(), Status.DONE);
     }
+
     @Test
     void CrossTest() {
-        Task task1 = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.of(1000,10,10,10,10));
-        Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.of(2000,10,10,10,10));
+        Task task1 = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.of(1000, 10, 10, 10, 10));
+        Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.of(2000, 10, 10, 10, 10));
         Assertions.assertTrue(taskManager.ifTasksNotCross(task1, task2));
 
         taskManager.addTask(task1);
