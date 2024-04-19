@@ -90,14 +90,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile))) {
             writer.append("id,type,name,status,description,epic,duration,startTime\n");
             for (Task task : allTasks) {
-                if (task.getType().equals(TaskType.SUBTASK)) {
-                    SubTask subTask = (SubTask) task;
-                    updateEpicTime(epics.get(subTask.getEpicId()));
-                }
-                if (task.getType().equals(TaskType.EPIC)) {
-                    Epic epic = (Epic) task;
-                    updateEpicTime(epic);
-                }
                 writer.write(FormatManager.toString(task));
                 writer.write("\n");
             }

@@ -7,10 +7,7 @@ import tasks.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -18,46 +15,37 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, Task> tasks = new HashMap<>();
     protected HashMap<Integer, Epic> epics = new HashMap<>();
     protected HashMap<Integer, SubTask> subs = new HashMap<>();
-    protected TreeSet<Task> prioritizedTasks = new TreeSet<>((task1, task2) -> {
-        LocalDateTime startTime1 = task1.getStartTime();
-        LocalDateTime startTime2 = task2.getStartTime();
-
-        if (startTime1 == null && startTime2 == null) {
-            return task1.getId() - task2.getId();
-        } else if (startTime1 == null) {
-            return 1;
-        } else if (startTime2 == null) {
-            return -1;
-        } else {
-            int tm = startTime1.compareTo(startTime2);
-            if (tm == 0) return task1.getId() - task2.getId();
-            return tm;
-        }
-    });
+    protected TreeSet<Task> prioritizedTasks = new TreeSet<>((task1, task2) ->
+            Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
+                    .thenComparing(Task::getId)
+                    .compare(task1, task2));
 
     protected HistoryManager historyManager = Managers.getDefaultHistory();
 
-    @Override
-    public boolean ifTasksNotCross(Task task1, Task task2) {
-        if (task1.getEndTime() != null && task2.getEndTime() != null) {
-            return task1.getEndTime().isBefore(task2.getStartTime());
+    private boolean ifTasksCross(Task task1, Task task2) {
+        if (task1.getStartTime() == null || task1.getEndTime() == null ||
+                task2.getStartTime() == null || task2.getEndTime() == null) {
+            return true;
         }
-        return true;
+        return !(task1.getStartTime().isAfter(task2.getEndTime()) || task1.getEndTime().isBefore(task2.getStartTime()));
     }
 
-    public TreeSet<Task> getPrioritizedTasks() {
 
+    public ArrayList<Task> getPrioritizedTasks() {
+        prioritizedTasks.clear();
+        prioritizedTasks.addAll(tasks.values().stream()
+                .filter(task -> task.getStartTime() != null && task.getDuration() != null)
+                .toList());
 
-        prioritizedTasks.addAll(tasks.values());
+        prioritizedTasks.addAll(subs.values().stream()
+                .filter(subTask -> subTask.getStartTime() != null && subTask.getDuration() != null)
+                .toList());
 
-        prioritizedTasks.addAll(epics.values());
-        prioritizedTasks.addAll(subs.values());
-
-
-        return new TreeSet<>(prioritizedTasks);
+        return new ArrayList<>(prioritizedTasks);
     }
 
-    public void updateEpicTime(Epic epic) {
+
+    private void updateEpicTime(Epic epic) {
         LocalDateTime endTime = LocalDateTime.of(1000, 1, 1, 1, 1);
         long duration = 0;
         LocalDateTime startTime = LocalDateTime.of(3000, 12, 21, 21, 12);
@@ -112,6 +100,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic == null) {
             return;
         }
+        updateEpicTime(epic);
 
         ArrayList<Integer> subList = epic.getSubTaskId();
         subList.remove(Integer.valueOf(id));
@@ -215,6 +204,9 @@ public class InMemoryTaskManager implements TaskManager {
         subs.keySet().stream().forEach(historyManager::remove);
         subs.clear();
         epics.values().forEach(Epic::clearSubTaskId);
+        for (Epic epic : epics.values()) {
+            updateEpicTime(epic);
+        }
     }
 
     @Override
@@ -247,6 +239,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         Epic epic = epics.get(subTask.getEpicId());
         updateEpicStatus(epic.getId());
+        updateEpicTime(epic);
         return subTask;
     }
 
@@ -264,7 +257,7 @@ public class InMemoryTaskManager implements TaskManager {
     public SubTask addSub(SubTask subTask) {
         if (epics.containsKey(subTask.getEpicId())) {
             List<Task> list = getPrioritizedTasks().stream()
-                    .filter(subtask1 -> !ifTasksNotCross(subtask1, subTask))
+                    .filter(subtask1 -> ifTasksCross(subtask1, subTask))
                     .toList();
             if (!list.isEmpty()) {
                 System.out.println("Задача пересекается");
@@ -275,6 +268,7 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic = epics.get(subTask.getEpicId());
             epic.getSubTaskId().add(id);
             updateEpicStatus(epic.getId());
+            updateEpicTime(epic);
         } else {
             System.out.println("Такого айди эпика нет");
         }
@@ -285,7 +279,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task addTask(Task task) {
         List<Task> list = getPrioritizedTasks().stream()
-                .filter(task1 -> !ifTasksNotCross(task1, task))
+                .filter(task1 -> ifTasksCross(task1, task))
                 .toList();
         if (!list.isEmpty()) {
             System.out.println("Задача пересекается");

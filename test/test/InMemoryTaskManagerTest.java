@@ -43,15 +43,6 @@ public class InMemoryTaskManagerTest {
         Assertions.assertEquals(taskManager.getEpic(2).getStatus(), Status.DONE);
     }
 
-    @Test
-    void CrossTest() {
-        Task task1 = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.of(1000, 10, 10, 10, 10));
-        Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.of(2000, 10, 10, 10, 10));
-        Assertions.assertTrue(taskManager.ifTasksNotCross(task1, task2));
-
-        taskManager.addTask(task1);
-        taskManager.addTask(task2);
-    }
 
     @Test
     void addNewTasks() throws ManagerSaveException {
