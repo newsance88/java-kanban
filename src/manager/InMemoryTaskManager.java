@@ -25,7 +25,7 @@ public class InMemoryTaskManager implements TaskManager {
     private boolean ifTasksCross(Task task1, Task task2) {
         if (task1.getStartTime() == null || task1.getEndTime() == null ||
                 task2.getStartTime() == null || task2.getEndTime() == null) {
-            return true;
+            return false;
         }
         return !(task1.getStartTime().isAfter(task2.getEndTime()) || task1.getEndTime().isBefore(task2.getStartTime()));
     }

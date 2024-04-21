@@ -23,6 +23,22 @@ public class InMemoryTaskManagerTest {
         taskManager = Managers.getDefault();
     }
 
+
+    @Test
+    void prioritizedTasksTest() {
+        Task task1 = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.of(2020,8,8,8,8));
+        Epic epic = new Epic("Задача2", Status.NEW, "описаниеЗадачи1");
+        SubTask subTask = new SubTask("Задача3", Status.NEW, "описаниеЗадачи1", 2, Duration.ofMinutes(5),LocalDateTime.now());
+        Task task2 = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10),  LocalDateTime.of(2014, 2, 2, 2, 2));
+        taskManager.addTask(task1);
+        taskManager.addEpic(epic);
+        taskManager.addSub(subTask);
+        taskManager.addTask(task2);
+        Assertions.assertEquals(taskManager.getPrioritizedTasks().get(0),taskManager.getTask(task2.getId()));
+        Assertions.assertEquals(taskManager.getPrioritizedTasks().get(1),taskManager.getTask(task1.getId()));
+        Assertions.assertEquals(taskManager.getPrioritizedTasks().get(2),taskManager.getSub(subTask.getId()));
+    }
+
     @Test
     void statusTest() {
         Task task1 = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.now());

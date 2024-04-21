@@ -78,8 +78,7 @@ public class Task {
         if (startTime == null || duration == null) {
             return null;
         }
-        long duration1 = duration.toMinutes();
-        return startTime.plus(Duration.ofMinutes(duration1));
+        return startTime.plusMinutes(duration.toMinutes());
     }
 
     public Duration getDuration() {

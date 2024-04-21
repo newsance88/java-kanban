@@ -20,13 +20,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         fileBackedTaskManager.getTask(1);
         fileBackedTaskManager.getSub(3);
 
-        //fileBackedTaskManager.removeSubs();
-        //System.out.println(fileBackedTaskManager.getEpic(2).getDuration());
         FileBackedTaskManager fileBackedTaskManager1 = loadFromFile(new File("Data"));
-        System.out.println(fileBackedTaskManager1.getPrioritizedTasks());
-        //System.out.println(fileBackedTaskManager1.getAllSubs());
-        //System.out.println(fileBackedTaskManager1.getAllTasks());
-        //System.out.println(fileBackedTaskManager1.getAllEpics());
     }
 
     private File dataFile;

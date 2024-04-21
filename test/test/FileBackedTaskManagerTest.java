@@ -12,6 +12,7 @@ import tasks.Task;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static manager.FileBackedTaskManager.loadFromFile;
@@ -23,22 +24,22 @@ public class FileBackedTaskManagerTest {
     void beforeEach() throws IOException {
         fileBackedTaskManager = new FileBackedTaskManager(File.createTempFile("prefix", "sufix"));
     }
-
     @Test
-    void getPrioritizedTasksTest() {
-        Task task1 = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.now());
-        Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(1), LocalDateTime.of(1000, 2, 2, 2, 2));
+    void prioritizedSaveTasksTest() {
+        Task task1 = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.of(2020,8,8,8,8));
         Epic epic = new Epic("Задача2", Status.NEW, "описаниеЗадачи1");
-        SubTask subTask = new SubTask("Задача3", Status.NEW, "описаниеЗадачи1", 2, Duration.ofMinutes(5), LocalDateTime.of(3000, 2, 2, 2, 2));
-        SubTask subTask2 = new SubTask("Задача4", Status.NEW, "описаниеЗадачи1", 2, Duration.ofMinutes(5), LocalDateTime.of(3000, 2, 2, 2, 2));
+        SubTask subTask = new SubTask("Задача3", Status.NEW, "описаниеЗадачи1", 2, Duration.ofMinutes(5),LocalDateTime.now());
+        Task task2 = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10),  LocalDateTime.of(2014, 2, 2, 2, 2));
         fileBackedTaskManager.addTask(task1);
         fileBackedTaskManager.addEpic(epic);
-        fileBackedTaskManager.addSub(subTask2);
-        fileBackedTaskManager.addTask(task2);
         fileBackedTaskManager.addSub(subTask);
-        Assertions.assertEquals(fileBackedTaskManager.getPrioritizedTasks().getFirst(), task2);
-        fileBackedTaskManager.removeSubs();
-        Assertions.assertEquals(epic.getDuration(), null);
+        fileBackedTaskManager.addTask(task2);
+
+        FileBackedTaskManager fileBackedTaskManager1 = loadFromFile(fileBackedTaskManager.getDataFile());
+        Assertions.assertEquals(fileBackedTaskManager.getPrioritizedTasks(),fileBackedTaskManager1.getPrioritizedTasks());
+        Assertions.assertEquals(fileBackedTaskManager1.getPrioritizedTasks().get(0),fileBackedTaskManager1.getTask(task2.getId()));
+        Assertions.assertEquals(fileBackedTaskManager1.getPrioritizedTasks().get(1),fileBackedTaskManager1.getTask(task1.getId()));
+        Assertions.assertEquals(fileBackedTaskManager1.getPrioritizedTasks().get(2),fileBackedTaskManager1.getSub(subTask.getId()));
     }
 
     @Test
