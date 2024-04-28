@@ -5,21 +5,22 @@ import exceptions.ManagerSaveException;
 import tasks.*;
 
 import java.io.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
-    public static void main(String[] args) throws ManagerSaveException { //Реализовал сценарий, все работаеи
+    public static void main(String[] args) throws ManagerSaveException {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(new File("Data"));
-        fileBackedTaskManager.addTask(new Task("name1", Status.NEW, "desr1"));
-        fileBackedTaskManager.addTask(new Epic("epic1", Status.NEW, "descr2"));
-        fileBackedTaskManager.addTask(new SubTask("sub1", Status.NEW, "descr3", 2));
+        fileBackedTaskManager.addTask(new Task("name1", Status.NEW, "desr1", null, null));
+        fileBackedTaskManager.addEpic(new Epic("epic1", Status.NEW, "descr2"));
+        fileBackedTaskManager.addSub(new SubTask("sub1", Status.NEW, "descr3", 2, Duration.ofMinutes(10), LocalDateTime.now()));
+        fileBackedTaskManager.addSub(new SubTask("sub2", Status.NEW, "descr4", 2, Duration.ofMinutes(10), LocalDateTime.now().plus(Duration.ofDays(2))));
         fileBackedTaskManager.getTask(1);
-        fileBackedTaskManager.getTask(3);
+        fileBackedTaskManager.getSub(3);
+
         FileBackedTaskManager fileBackedTaskManager1 = loadFromFile(new File("Data"));
-        System.out.println(fileBackedTaskManager1.getAllSubs());
-        System.out.println(fileBackedTaskManager1.getAllTasks());
-        System.out.println(fileBackedTaskManager1.getAllEpics());
     }
 
     private File dataFile;
@@ -81,7 +82,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         allTasks.addAll(getAllEpics());
         allTasks.addAll(getAllSubs());
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile))) {
-            writer.append("id,type,name,status,description,epic\n");
+            writer.append("id,type,name,status,description,epic,duration,startTime\n");
             for (Task task : allTasks) {
                 writer.write(FormatManager.toString(task));
                 writer.write("\n");

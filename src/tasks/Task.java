@@ -1,18 +1,33 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
     protected int id;
     protected String name;
     protected Status status;
+    protected Duration duration;
+    protected LocalDateTime startTime;
 
     protected String description;
 
-    public Task(String name, Status status, String description) {
+    public Task(String name, Status status, String description, Duration duration, LocalDateTime startTime) {
         this.name = name;
         this.status = status;
         this.description = description;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public Task(String name, Status status, String description, int id, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.status = status;
+        this.id = id;
+        this.description = description;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     public Task(String name, Status status, String description, int id) {
@@ -59,14 +74,27 @@ public class Task {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", status=" + status +
-                ", description='" + description + '\'' +
-                '}';
+    public LocalDateTime getEndTime() {
+        if (startTime == null || duration == null) {
+            return null;
+        }
+        return startTime.plusMinutes(duration.toMinutes());
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 
 
@@ -83,4 +111,15 @@ public class Task {
         return Objects.hash(id, name, status, description);
     }
 
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

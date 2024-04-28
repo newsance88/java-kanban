@@ -1,17 +1,23 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Epic extends Task {
     private ArrayList<Integer> subTaskId = new ArrayList<>();
+    private LocalDateTime endTime;
 
     public Epic(String name, Status status, String description) {
-        super(name, status, description);
+        super(name, status, description, null, null);
+    }
+
+    public Epic(String name, Status status, String description, int id, Duration duration, LocalDateTime startTime) {
+        super(name, status, description, id, duration, startTime);
     }
 
     public Epic(String name, Status status, String description, int id) {
-        super(name, status, description);
-        this.id = id;
+        super(name, status, description, id);
     }
 
     public ArrayList<Integer> getSubTaskId() {
@@ -26,18 +32,28 @@ public class Epic extends Task {
         subTaskId.clear();
     }
 
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
     @Override
     public TaskType getType() {
         return TaskType.EPIC;
     }
 
     @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    @Override
     public String toString() {
         return "Epic{" +
-                "subTaskId=" + subTaskId +
-                ", id=" + id +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", status=" + status +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 ", description='" + description + '\'' +
                 '}';
     }

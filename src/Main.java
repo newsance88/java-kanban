@@ -1,22 +1,25 @@
 import exceptions.ManagerSaveException;
+import manager.InMemoryTaskManager;
 import manager.Managers;
-import manager.TaskManager;
 import tasks.Epic;
 import tasks.Status;
 import tasks.SubTask;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Main {
     public static void main(String[] args) throws ManagerSaveException {
-        TaskManager taskManager;
-        taskManager = Managers.getDefault();
-        Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1");
-        Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи1");
-        Epic epic = new Epic("Эпик1", Status.NEW, "описаниеЗадачи1");
-        Epic epic2 = new Epic("Эпик2", Status.NEW, "описаниеЗадачи1");
-        SubTask subTask = new SubTask("Задача1", Status.NEW, "описаниеЗадачи1", epic.getId());
-        System.out.println(task.getType());
-        System.out.println(epic.getType());
-        System.out.println(subTask.getType());
+        InMemoryTaskManager taskManager = Managers.getDefault();
+        Task task1 = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.now());
+        Epic epic = new Epic("Задача2", Status.NEW, "описаниеЗадачи1");
+        SubTask subTask = new SubTask("Задача3", Status.NEW, "описаниеЗадачи1", 2, Duration.ofMinutes(5), LocalDateTime.of(2028, 2, 2, 2, 2));
+        SubTask subTask2 = new SubTask("Задача4", Status.NEW, "описаниеЗадачи1", 2, Duration.ofMinutes(5), LocalDateTime.of(2014, 2, 2, 2, 2));
+        taskManager.addTask(task1);
+        taskManager.addEpic(epic);
+        taskManager.addSub(subTask);
+        taskManager.addSub(subTask2);
+        System.out.println(taskManager.getPrioritizedTasks());
     }
 }
