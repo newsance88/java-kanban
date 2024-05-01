@@ -8,6 +8,7 @@ import com.sun.net.httpserver.HttpHandler;
 import exceptions.TasksCrossException;
 import manager.Managers;
 import manager.TaskManager;
+import tasks.SubTask;
 import tasks.Task;
 
 import java.io.IOException;
@@ -17,8 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-public class TaskHandler extends  BaseHttpHandler implements HttpHandler {
-    public TaskHandler(TaskManager taskManager) {
+public class SubTaskHandler extends BaseHttpHandler implements HttpHandler {
+    public SubTaskHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
     Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,new TimeAdapter()).registerTypeAdapter(Duration.class,new DurationAdapter()).create();
@@ -48,7 +49,7 @@ public class TaskHandler extends  BaseHttpHandler implements HttpHandler {
         }
     }
     private void handleDelete(HttpExchange httpExchange) throws IOException {
-        taskManager.removeTasks();
+        taskManager.removeSubs();
         sendText(httpExchange,"Задачи удалены");
     }
     private void handlePost(HttpExchange httpExchange) throws IOException {
@@ -56,9 +57,9 @@ public class TaskHandler extends  BaseHttpHandler implements HttpHandler {
         Type mapType = new TypeToken<Map<String, String>>(){}.getType();
         Map<String,String> map = gson.fromJson(request,mapType);
         if (map.get("id") == null || map.get("id").equals("0")) {
-            Task task = gson.fromJson(request, Task.class);
+            SubTask task = gson.fromJson(request, SubTask.class);
             try {
-                taskManager.addTask(task);
+                taskManager.addSub(task);
                 sendText(httpExchange,"Задача добавлена");
 
             } catch (TasksCrossException e) {
@@ -66,19 +67,19 @@ public class TaskHandler extends  BaseHttpHandler implements HttpHandler {
             }
         } else {
             int taskId = Integer.parseInt(map.get("id"));
-            Task task = gson.fromJson(request, Task.class);
+            SubTask task = gson.fromJson(request, SubTask.class);
             task.setId(taskId);
-            taskManager.updateTask(task);
+            taskManager.updateSub(task);
             sendText(httpExchange,"Задача обновлена");
         }
     }
     private void handleGet(HttpExchange httpExchange) throws IOException {
-        List<Task> tasks = taskManager.getAllTasks();
+        List<SubTask> tasks = taskManager.getAllSubs();
         String str = gson.toJson(tasks);
         sendText(httpExchange,str);
     }
     private void handleGetId(HttpExchange httpExchange,int id) throws IOException {
-        Task task = taskManager.getTask(id);
+        SubTask task = taskManager.getSub(id);
         if (task == null) {
             sendErrorText(httpExchange,"Задача не существует",404);
         } else {

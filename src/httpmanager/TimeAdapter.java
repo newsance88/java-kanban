@@ -20,11 +20,7 @@ public class TimeAdapter extends TypeAdapter<LocalDateTime> {
 
     @Override
     public LocalDateTime read(JsonReader jsonReader) throws IOException {
-        if (jsonReader.nextString() == null) {
-            return null;
-        }
-        else {
-            return LocalDateTime.parse(jsonReader.nextString(),DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        }
+        String dateStr = jsonReader.nextString();
+        return dateStr != null ? LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null;
     }
 }

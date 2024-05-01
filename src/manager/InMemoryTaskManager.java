@@ -1,5 +1,6 @@
 package manager;
 
+import exceptions.TasksCrossException;
 import tasks.Epic;
 import tasks.Status;
 import tasks.SubTask;
@@ -30,7 +31,7 @@ public class InMemoryTaskManager implements TaskManager {
         return !(task1.getStartTime().isAfter(task2.getEndTime()) || task1.getEndTime().isBefore(task2.getStartTime()));
     }
 
-
+    @Override
     public ArrayList<Task> getPrioritizedTasks() {
         prioritizedTasks.clear();
         prioritizedTasks.addAll(tasks.values().stream()
@@ -261,6 +262,7 @@ public class InMemoryTaskManager implements TaskManager {
                     .toList();
             if (!list.isEmpty()) {
                 System.out.println("Задача пересекается");
+                throw new TasksCrossException("Задача пересекается");
             }
             id++;
             subTask.setId(id);
@@ -283,6 +285,8 @@ public class InMemoryTaskManager implements TaskManager {
                 .toList();
         if (!list.isEmpty()) {
             System.out.println("Задача пересекается");
+            throw new TasksCrossException("Задача пересекается");
+
         }
         id++;
         task.setId(id);

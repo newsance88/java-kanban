@@ -8,7 +8,8 @@ import com.sun.net.httpserver.HttpHandler;
 import exceptions.TasksCrossException;
 import manager.Managers;
 import manager.TaskManager;
-import tasks.Task;
+import tasks.Epic;
+import tasks.SubTask;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -17,8 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-public class TaskHandler extends  BaseHttpHandler implements HttpHandler {
-    public TaskHandler(TaskManager taskManager) {
+public class EpicHandler extends BaseHttpHandler implements HttpHandler {
+    public EpicHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
     Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,new TimeAdapter()).registerTypeAdapter(Duration.class,new DurationAdapter()).create();
@@ -30,7 +31,9 @@ public class TaskHandler extends  BaseHttpHandler implements HttpHandler {
             case "GET" : {
                 if (path.split("/").length==3) {
                     handleGetId(exchange, Integer.parseInt(path.split("/")[2]));
-                } else {
+                }else if(path.split("/").length==4) {
+                    handleGetSubs(exchange, Integer.parseInt(path.split("/")[2]));
+                }else {
                     handleGet(exchange);
                 }
                 break;
@@ -48,7 +51,8 @@ public class TaskHandler extends  BaseHttpHandler implements HttpHandler {
         }
     }
     private void handleDelete(HttpExchange httpExchange) throws IOException {
-        taskManager.removeTasks();
+        taskManager.removeEpics();
+        taskManager.removeSubs();
         sendText(httpExchange,"Задачи удалены");
     }
     private void handlePost(HttpExchange httpExchange) throws IOException {
@@ -56,29 +60,28 @@ public class TaskHandler extends  BaseHttpHandler implements HttpHandler {
         Type mapType = new TypeToken<Map<String, String>>(){}.getType();
         Map<String,String> map = gson.fromJson(request,mapType);
         if (map.get("id") == null || map.get("id").equals("0")) {
-            Task task = gson.fromJson(request, Task.class);
+            Epic task = gson.fromJson(request, Epic.class);
             try {
-                taskManager.addTask(task);
+                taskManager.addEpic(task);
                 sendText(httpExchange,"Задача добавлена");
-
             } catch (TasksCrossException e) {
                 sendErrorText(httpExchange,"Задачи пересекаются",406);
             }
         } else {
             int taskId = Integer.parseInt(map.get("id"));
-            Task task = gson.fromJson(request, Task.class);
+            Epic task = gson.fromJson(request, Epic.class);
             task.setId(taskId);
-            taskManager.updateTask(task);
+            taskManager.updateEpic(task);
             sendText(httpExchange,"Задача обновлена");
         }
     }
     private void handleGet(HttpExchange httpExchange) throws IOException {
-        List<Task> tasks = taskManager.getAllTasks();
+        List<Epic> tasks = taskManager.getAllEpics();
         String str = gson.toJson(tasks);
         sendText(httpExchange,str);
     }
     private void handleGetId(HttpExchange httpExchange,int id) throws IOException {
-        Task task = taskManager.getTask(id);
+        Epic task = taskManager.getEpic(id);
         if (task == null) {
             sendErrorText(httpExchange,"Задача не существует",404);
         } else {
@@ -86,4 +89,15 @@ public class TaskHandler extends  BaseHttpHandler implements HttpHandler {
             sendText(httpExchange,str);
         }
     }
+    private void handleGetSubs(HttpExchange httpExchange,int id) throws IOException {
+        Epic task = taskManager.getEpic(id);
+        if (task == null) {
+            sendErrorText(httpExchange,"Задача не существует",404);
+        } else {
+            List<SubTask> tasks = taskManager.getSubsFromEpic(id);
+            String str = gson.toJson(tasks);
+            sendText(httpExchange,str);
+        }
+    }
 }
+
