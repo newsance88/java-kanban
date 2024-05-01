@@ -64,22 +64,22 @@ public class HttpTaskManagerTasksTest {
 
     @Test
     public void historyTest() throws IOException, InterruptedException {
-        Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.of(2020, 8, 8, 8, 8));
-        Epic epic = new Epic("Задача2", Status.NEW, "описаниеЗадачи1");
-        SubTask subTask = new SubTask("Задача3", Status.NEW, "описаниеЗадачи1", 2, Duration.ofMinutes(5), LocalDateTime.of(2000, 2, 2, 2, 2));
+        Task task = new Task("Задача1", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.of(2021, 8, 8, 8, 8));
+        Task task2 = new Task("Задача2", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.of(2022, 8, 8, 8, 8));
+        Task task3 = new Task("Задача3", Status.NEW, "описаниеЗадачи1", Duration.ofMinutes(10), LocalDateTime.of(2023, 8, 8, 8, 8));
         taskManager.addTask(task);
-        taskManager.addEpic(epic);
-        taskManager.addSub(subTask);
-        taskManager.getEpic(2);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+        taskManager.getTask(2);
         taskManager.getTask(1);
-        taskManager.getSub(3);
+        taskManager.getTask(3);
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks/");
+        URI url = URI.create("http://localhost:8080/history/");
         HttpRequest request = HttpRequest.newBuilder(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         List<Task> list = gson.fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
         }.getType());
-
+        System.out.println(list);
         Assertions.assertEquals(list, taskManager.getHistory());
         Assertions.assertEquals(200, response.statusCode());
     }
