@@ -3,7 +3,6 @@ package httpmanager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
-import manager.InMemoryTaskManager;
 import manager.Managers;
 import manager.TaskManager;
 import tasks.Epic;
@@ -24,13 +23,15 @@ public class HttpTaskServer {
 
     public HttpTaskServer(TaskManager taskManager) {
         this.taskManager = taskManager;
-        this.gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,new TimeAdapter()).registerTypeAdapter(Duration.class,new DurationAdapter()).create();
+        this.gson = new GsonBuilder().registerTypeAdapter(Epic.class, new EpicAdapter()).registerTypeAdapter(LocalDateTime.class, new TimeAdapter()).registerTypeAdapter(Duration.class, new DurationAdapter()).create();
     }
+
     public void stop() {
         httpServer.stop(0);
     }
+
     public void start() throws IOException {
-        httpServer = HttpServer.create(new InetSocketAddress(PORT),0);
+        httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
         httpServer.createContext("/tasks", new TaskHandler(taskManager));
         httpServer.createContext("/subtasks", new SubTaskHandler(taskManager));
         httpServer.createContext("/epics", new EpicHandler(taskManager));
@@ -40,9 +41,11 @@ public class HttpTaskServer {
         httpServer.start();
         System.out.println("Сервер запущен. Порт: " + PORT);
     }
+
     public static Gson getGson() {
         return gson;
     }
+
     public static void main(String[] args) throws IOException {
         TaskManager taskManager = Managers.getDefault();
         HttpTaskServer server = new HttpTaskServer(taskManager);
