@@ -1,27 +1,20 @@
 package httpmanager;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import exceptions.TasksCrossException;
 import manager.TaskManager;
 import tasks.SubTask;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-public class SubTaskHandler extends BaseHttpHandler implements HttpHandler {
+public class SubTaskHandler extends BaseHttpHandler {
     public SubTaskHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
-
-    Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new TimeAdapter()).registerTypeAdapter(Duration.class, new DurationAdapter()).create();
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -45,7 +38,7 @@ public class SubTaskHandler extends BaseHttpHandler implements HttpHandler {
                 break;
             }
             default:
-                sendErrorText(exchange, "Неверный запрос", 404);
+                sendErrorText(exchange, "Неверный запрос", 405);
         }
     }
 

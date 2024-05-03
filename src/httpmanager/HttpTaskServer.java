@@ -1,7 +1,6 @@
 package httpmanager;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
 import manager.Managers;
 import manager.TaskManager;
@@ -23,7 +22,7 @@ public class HttpTaskServer {
 
     public HttpTaskServer(TaskManager taskManager) {
         this.taskManager = taskManager;
-        this.gson = new GsonBuilder().registerTypeAdapter(Epic.class, new EpicAdapter()).registerTypeAdapter(LocalDateTime.class, new TimeAdapter()).registerTypeAdapter(Duration.class, new DurationAdapter()).create();
+        this.gson = Managers.createGsonWithAdapters();
     }
 
     public void stop() {
