@@ -5,6 +5,7 @@ import tasks.SubTask;
 import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
 
@@ -47,4 +48,6 @@ public interface TaskManager {
     ArrayList<SubTask> getAllSubs();
 
     ArrayList<Task> getAllTasks();
+
+    List<Task> getPrioritizedTasks();
 }
